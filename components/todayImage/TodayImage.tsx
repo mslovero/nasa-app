@@ -28,7 +28,6 @@ const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.containerImage}>
         <View style={styles.image}
         >
         <YoutubePlayer
@@ -40,11 +39,10 @@ const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
         </View>
     
         {/* <Button title={playing ? "Pausar" : "Reproducir"} onPress={togglePlaying} /> */}
-      </View>
       <Text style={styles.title}>{title}</Text>
-      <Text>{date}</Text>
-      <View>
-        <Button title="Ver" />
+      <Text style={styles.date}>{date}</Text>
+      <View style={styles.buttonContainer}>
+        <Button title="View" />
       </View>
     </View>
   );
@@ -60,18 +58,24 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     padding: 16
   },
-  containerImage: {},
   image: {
     width: "100%",
-    height:200,
+    height:160,
     borderColor: "#fff",
     borderWidth: 2,
-    borderRadius: 32,
-    paddingVertical:20,
-    paddingHorizontal:10
+  
   },
   title: {
-    fontSize: 23,
-    color: "white"
+    fontSize: 20,
+    color:  "#fff",
+    marginVertical:12,
+    fontWeight:"bold"
+  },
+  date: {
+    color: "#fff",
+    fontSize:16,
+  },
+  buttonContainer:{
+    alignItems:"flex-end"
   }
 });
