@@ -1,70 +1,77 @@
-import { Button, Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useState, useRef } from 'react'
- import { PostImage } from '../../src/types'
- import { Video, ResizeMode } from 'expo-av';
- const TEST_VIDEO_URL = "https://www.youtube.com/embed/1R5QqhPq1Ik?rel=0";
+import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+import React, { FC, useState, useCallback } from 'react';
+import { PostImage } from '../../src/types';
+import YoutubePlayer from "react-native-youtube-iframe";
 
-const TodayImage: FC<PostImage> = ({url , date, title,media_type}) => {
-  const video = useRef(null);
-  const [status, setStatus] = useState<any>({});
+// Función para extraer el ID del video desde la URL
+const extractVideoId = (url) => {
+  const regex = /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regex);
+  return match && match[1] ? match[1] : url;
+};
 
+const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
+  const [playing, setPlaying] = useState(false);
+
+  const onStateChange = useCallback((state) => {
+    if (state === "ended") {
+      setPlaying(false);
+      Alert.alert("¡El video ha terminado de reproducirse!");
+    }
+  }, []);
+
+  const togglePlaying = useCallback(() => {
+    setPlaying((prev) => !prev);
+  }, []);
+
+  const videoId = extractVideoId(url);
 
   return (
     <View style={styles.container}>
       <View style={styles.containerImage}>
-        
-          <Video
-             ref={video}
-            source={{ uri: url }} 
-            style={styles.image} 
-            useNativeControls
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping
-          onPlaybackStatusUpdate={status => setStatus(() => status)}
-          
-          />
-       <View >
-        <Button
-          title={status.isPlaying ? 'Pause' : 'Play'}
-          onPress={() =>
-            status.isPlaying ? video.current?.pauseAsync() : video.current?.playAsync()
-          }
+        <View style={styles.image}
+        >
+        <YoutubePlayer
+          height={300}
+          play={playing}
+          videoId={videoId}
+          onChangeState={onStateChange}
         />
-      </View> 
+        </View>
+    
+        {/* <Button title={playing ? "Pausar" : "Reproducir"} onPress={togglePlaying} /> */}
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text>{date}</Text>
       <View>
-        <Button  title="view"/>
+        <Button title="Ver" />
       </View>
     </View>
-  )
+  );
 }
 
-export default TodayImage
+export default TodayImage;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor:"#2c449d",
-    marginVertical:16,
-    marginHorizontal:24,
-    borderRadius:32,
-    padding:16
-
+    backgroundColor: "#2c449d",
+    marginVertical: 16,
+    marginHorizontal: 24,
+    borderRadius: 32,
+    padding: 16
   },
-  containerImage: {
-    
-
-  },
+  containerImage: {},
   image: {
-    width:"100%",
-    height:190,
-    borderColor:"#fff",
-    borderWidth:2,
-    borderRadius:32,
+    width: "100%",
+    height:200,
+    borderColor: "#fff",
+    borderWidth: 2,
+    borderRadius: 32,
+    paddingVertical:20,
+    paddingHorizontal:10
   },
   title: {
-    fontSize:23,
-    color:"white"
+    fontSize: 23,
+    color: "white"
   }
-})
+});
