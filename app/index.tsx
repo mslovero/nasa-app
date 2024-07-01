@@ -1,11 +1,13 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import Home from "../hooks/views/Home";
+import Home from "./routes/views/Home";
+import Routes from "./routes";
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-     <Home />
+     {/* <Home /> */}
+     <Routes />
     </SafeAreaView>
   );
 };

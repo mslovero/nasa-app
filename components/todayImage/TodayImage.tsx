@@ -1,17 +1,27 @@
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import React, { FC, useState, useCallback } from 'react';
-import { PostImage } from '../../src/types';
+import { PostImage, RootStackParams } from '../../src/types';
 import YoutubePlayer from "react-native-youtube-iframe";
 
-// Función para extraer el ID del video desde la URL
+// import { useNavigation } from '@react-navigation/native';
+// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useNavigateToDetail } from '../../hooks/useNavigationToDetail';
+
 const extractVideoId = (url) => {
+  if (!url) return url; 
+
   const regex = /(?:\?v=|\/embed\/|\.be\/|\/v\/|\/watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regex);
   return match && match[1] ? match[1] : url;
 };
 
-const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
+// type PostImageNavigationProps = NativeStackNavigationProp<RootStackParams, 'Detail'>
+
+const TodayImage: FC<PostImage> = ({ url, date, title, explanation }) => {
   const [playing, setPlaying] = useState(false);
+  // const {navigate} = useNavigation<PostImageNavigationProps>()
+  const navigateToDetail = useNavigateToDetail();
 
   const onStateChange = useCallback((state) => {
     if (state === "ended") {
@@ -26,6 +36,9 @@ const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
 
   const videoId = extractVideoId(url);
 
+  const handleViewPress = () => {
+    navigateToDetail(title, date, url, explanation);
+  }
   return (
     <View style={styles.container}>
         <View style={styles.image}
@@ -42,7 +55,7 @@ const TodayImage: FC<PostImage> = ({ url, date, title, media_type }) => {
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.date}>{date}</Text>
       <View style={styles.buttonContainer}>
-        <Button title="View" />
+        <Button title="View" onPress={handleViewPress}/>
       </View>
     </View>
   );
@@ -63,19 +76,19 @@ const styles = StyleSheet.create({
     height:160,
     borderColor: "#fff",
     borderWidth: 2,
-  
+    
   },
   title: {
     fontSize: 20,
-    color:  "#fff",
+    color: "#fff",
     marginVertical:12,
     fontWeight:"bold"
   },
   date: {
     color: "#fff",
-    fontSize:16,
+
   },
-  buttonContainer:{
+  buttonContainer: {
     alignItems:"flex-end"
   }
 });

@@ -38,7 +38,10 @@ color:"white"
 
     },
     image:{
-width:60,
-height:60
+        width:60,
+        height:60,
+        opacity: 0.9,
+
+
     }
 })

@@ -5,5 +5,9 @@ export type PostImage = {
     url?: string,
     title?: string,
     service_version?:string,
+}
 
+export type RootStackParams = {
+    Home: undefined;
+    Detail: PostImage
 }
